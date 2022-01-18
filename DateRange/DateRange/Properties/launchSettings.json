@@ -1,8 +1,7 @@
 {
   "profiles": {
     "DateRange": {
-      "commandName": "Project",
-      "commandLineArgs": "50.12.2025 40.01.2017"
+      "commandName": "Project"
     }
   }
 }

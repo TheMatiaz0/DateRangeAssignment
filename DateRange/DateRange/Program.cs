@@ -12,7 +12,7 @@ namespace DateRange
 
     public class Program
     {
-        private static readonly string[] visibleDateString =
+        private static readonly string[] formatDateString =
         {
             "dd.MM.yyyy",
             "dd.MM",
@@ -21,9 +21,13 @@ namespace DateRange
 
         private static string GetVisibleDateString(VisibleDate date)
         {
-            return visibleDateString[(int)date];
+            return formatDateString[(int)date];
         }
 
+        /// <summary>
+        /// Picks only two first arguments as string value.
+        /// </summary>
+        /// <param name="args"></param>
         private static void Main(string[] args)
         {
             Console.WriteLine(Initialize(args));
@@ -38,16 +42,16 @@ namespace DateRange
         {
             if (args.Length < 2)
             {
-                return null;
+                throw new ArgumentOutOfRangeException(nameof(args), $"Argument or arguments are missing! Launch the program with two dates as arguments");
             }
 
             if (!DateTime.TryParse(args[0], out DateTime firstDate))
             {
-                return null;
+                throw new FormatException($"Bad format of first date argument! {args[0]} isn't the right format of date!");
             }
             if (!DateTime.TryParse(args[1], out DateTime secondDate))
             {
-                return null;
+                throw new FormatException($"Bad format of second date argument! {args[1]} isn't the right format of date!");
             }
 
             int yearDifference = firstDate.Year - secondDate.Year;
@@ -68,7 +72,7 @@ namespace DateRange
                 return dayValue;
             }
 
-            return null;
+            return firstDate.ToString(formatDateString[0]);
         }
 
         private static bool CheckValue(int difference, DateTime firstDate, DateTime secondDate, string first, out string? trueRange)
@@ -91,7 +95,7 @@ namespace DateRange
 
         private static string GetTrueRange(DateTime firstDate, DateTime secondDate, string firstString)
         {
-            return $"{firstDate.ToString(firstString)} - {secondDate:dd.MM.yyyy}";
+            return $"{firstDate.ToString(firstString)} - {secondDate.ToString(formatDateString[0])}";
         }
     }
 }
