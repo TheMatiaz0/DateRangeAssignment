@@ -92,11 +92,11 @@ namespace DateRange
         {
             if (!DateTime.TryParse(args[0], out DateTime firstDate))
             {
-                throw new FormatException($"Bad format of first date argument! {args[0]} isn't the right format of date!");
+                throw new FormatException($"Bad format of first date argument! \"{args[0]}\" isn't the right format of date!");
             }
             if (!DateTime.TryParse(args[1], out DateTime secondDate))
             {
-                throw new FormatException($"Bad format of second date argument! {args[1]} isn't the right format of date!");
+                throw new FormatException($"Bad format of second date argument! \"{args[1]}\" isn't the right format of date!");
             }
 
             return (firstDate, secondDate);
