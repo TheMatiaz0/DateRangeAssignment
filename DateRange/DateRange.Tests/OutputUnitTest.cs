@@ -9,7 +9,7 @@ namespace DateRange.Tests
 {
     public class OutputUnitTest
     {
-        private readonly ITestOutputHelper output;
+        protected readonly ITestOutputHelper output;
 
         public OutputUnitTest(ITestOutputHelper output)
         {

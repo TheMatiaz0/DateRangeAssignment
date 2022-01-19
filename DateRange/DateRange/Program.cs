@@ -12,7 +12,9 @@ namespace DateRange
 
     public class Program
     {
-        public static readonly string[] formatDateString =
+        #region Date formatting
+
+        public static readonly string[] formatTypes =
         {
             "dd.MM.yyyy",
             "dd.MM",
@@ -21,36 +23,42 @@ namespace DateRange
 
         public static string GetVisibleDateString(VisibleDate date)
         {
-            return formatDateString[(int)date];
+            return formatTypes[(int)date];
         }
 
-        private static string? CheckYear(DateTime firstDate, DateTime secondDate)
+        #endregion
+
+        #region Checking difference of each date element
+
+        public static string? CheckYear(DateTime firstDate, DateTime secondDate)
         {
             int yearDifference = firstDate.Year - secondDate.Year;
             return CheckValue(yearDifference, firstDate,
                 secondDate, GetVisibleDateString(VisibleDate.Full));
         }
 
-        private static string? CheckDayMonth(DateTime firstDate, DateTime secondDate)
+        public static string? CheckDayMonth(DateTime firstDate, DateTime secondDate)
         {
             int monthDifference = firstDate.Month - secondDate.Month;
             return CheckValue(monthDifference, firstDate,
                 secondDate, GetVisibleDateString(VisibleDate.DayMonth));
         }
 
-        private static string? CheckDay(DateTime firstDate, DateTime secondDate)
+        public static string? CheckDay(DateTime firstDate, DateTime secondDate)
         {
             int dayDifference = firstDate.Day - secondDate.Day;
             return CheckValue(dayDifference, firstDate,
                 secondDate, GetVisibleDateString(VisibleDate.Day));
         }
 
-        private static Func<DateTime, DateTime, string?>[] checkFunctions = new Func<DateTime, DateTime, string?>[]
+        private static readonly Func<DateTime, DateTime, string?>[] checkFunctions = new Func<DateTime, DateTime, string?>[]
         {
             CheckYear,
             CheckDayMonth,
             CheckDay
         };
+
+        #endregion
 
         /// <summary>
         /// Picks only two first arguments as string value.
@@ -61,8 +69,10 @@ namespace DateRange
             Console.WriteLine(Initialize(args));
         }
 
+        #region Parsing DateTime to string
+
         /// <summary>
-        /// Main method of this DateRange program.
+        /// Main method of this DateRange program. Parses string arguments to DateTime type.
         /// </summary>
         /// <param name="args"></param>
         /// <returns>Range in string, null if dates are unavailable to range (for ex. 31.50.2020 - 31.49.2020).</returns>
@@ -75,16 +85,7 @@ namespace DateRange
 
             (DateTime firstDate, DateTime secondDate) = ParseDates(args);
 
-            for (int i = 0; i < 3; i++)
-            {
-                string? dateFragmentString;
-                if ((dateFragmentString = checkFunctions[i](firstDate, secondDate)) != null)
-                {
-                    return dateFragmentString;
-                }
-            }
-
-            return firstDate.ToString(formatDateString[0]);
+            return Initialize(firstDate, secondDate);
         }
 
         private static (DateTime, DateTime) ParseDates(string[] args)
@@ -99,6 +100,28 @@ namespace DateRange
             }
 
             return (firstDate, secondDate);
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Second main method of this DateRange program. If you are looking for date parsing there is a method with string arguments.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns>Range in string, null if dates are unavailable to range (for ex. 31.50.2020 - 31.49.2020).</returns>
+        public static string? Initialize(DateTime firstDate, DateTime secondDate)
+        {
+            // Check for year, dayMonth, day
+            for (int i = 0; i < checkFunctions.Length; i++)
+            {
+                string? dateFragmentString;
+                if ((dateFragmentString = checkFunctions[i](firstDate, secondDate)) != null)
+                {
+                    return dateFragmentString;
+                }
+            }
+
+            return firstDate.ToString(formatTypes[0]);
         }
 
         private static string? CheckValue(int difference, DateTime firstDate, DateTime secondDate, string first)
@@ -120,7 +143,7 @@ namespace DateRange
 
         private static string GetTrueRange(DateTime firstDate, DateTime secondDate, string firstString)
         {
-            return $"{firstDate.ToString(firstString)} - {secondDate.ToString(formatDateString[0])}";
+            return $"{firstDate.ToString(firstString)} - {secondDate.ToString(formatTypes[0])}";
         }
     }
 }
