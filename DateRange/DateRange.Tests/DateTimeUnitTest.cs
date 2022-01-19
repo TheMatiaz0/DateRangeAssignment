@@ -83,7 +83,7 @@ namespace DateRange.Tests
         {
             string? response = Program.Initialize(firstDate, secondDate);
             output.WriteLine(response);
-            response = response == null ? string.Empty : response;
+            response ??= string.Empty;
             string[] split = response.Split('-');
 
             bool buildDayAndMonth = false;

@@ -14,7 +14,7 @@ namespace DateRange
     {
         #region Date formatting
 
-        public static readonly string[] formatTypes =
+        public static string[] FormatTypes { get; } =
         {
             "dd.MM.yyyy",
             "dd.MM",
@@ -23,7 +23,7 @@ namespace DateRange
 
         public static string GetVisibleDateString(VisibleDate date)
         {
-            return formatTypes[(int)date];
+            return FormatTypes[(int)date];
         }
 
         #endregion
@@ -33,28 +33,28 @@ namespace DateRange
         public static string? CheckYear(DateTime firstDate, DateTime secondDate)
         {
             int yearDifference = firstDate.Year - secondDate.Year;
-            return CheckValue(yearDifference, firstDate,
+            return GetSortedRange(yearDifference, firstDate,
                 secondDate, GetVisibleDateString(VisibleDate.Full));
         }
 
-        public static string? CheckDayMonth(DateTime firstDate, DateTime secondDate)
+        public static string? CheckMonth(DateTime firstDate, DateTime secondDate)
         {
             int monthDifference = firstDate.Month - secondDate.Month;
-            return CheckValue(monthDifference, firstDate,
+            return GetSortedRange(monthDifference, firstDate,
                 secondDate, GetVisibleDateString(VisibleDate.DayMonth));
         }
 
         public static string? CheckDay(DateTime firstDate, DateTime secondDate)
         {
             int dayDifference = firstDate.Day - secondDate.Day;
-            return CheckValue(dayDifference, firstDate,
+            return GetSortedRange(dayDifference, firstDate,
                 secondDate, GetVisibleDateString(VisibleDate.Day));
         }
 
         private static readonly Func<DateTime, DateTime, string?>[] checkFunctions = new Func<DateTime, DateTime, string?>[]
         {
             CheckYear,
-            CheckDayMonth,
+            CheckMonth,
             CheckDay
         };
 
@@ -111,7 +111,7 @@ namespace DateRange
         /// <returns>Range in string, null if dates are unavailable to range (for ex. 31.50.2020 - 31.49.2020).</returns>
         public static string? Initialize(DateTime firstDate, DateTime secondDate)
         {
-            // Check for year, dayMonth, day
+            // Check for year, month, day
             for (int i = 0; i < checkFunctions.Length; i++)
             {
                 string? dateFragmentString;
@@ -121,10 +121,10 @@ namespace DateRange
                 }
             }
 
-            return firstDate.ToString(formatTypes[0]);
+            return firstDate.ToString(FormatTypes[0]);
         }
 
-        private static string? CheckValue(int difference, DateTime firstDate, DateTime secondDate, string first)
+        private static string? GetSortedRange(int difference, DateTime firstDate, DateTime secondDate, string first)
         {
             if (difference == 0)
             {
@@ -143,7 +143,7 @@ namespace DateRange
 
         private static string GetTrueRange(DateTime firstDate, DateTime secondDate, string firstString)
         {
-            return $"{firstDate.ToString(firstString)} - {secondDate.ToString(formatTypes[0])}";
+            return $"{firstDate.ToString(firstString)} - {secondDate.ToString(FormatTypes[0])}";
         }
     }
 }

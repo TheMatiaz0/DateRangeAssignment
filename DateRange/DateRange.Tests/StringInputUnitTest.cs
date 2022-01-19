@@ -21,7 +21,7 @@ namespace DateRange.Tests
             return date.Remove(2);
         }
 
-        private string Check(VisibleDate dateType, string date1, string date2)
+        private static string FormatDatesToRange(VisibleDate dateType, string date1, string date2)
         {
             switch(dateType)
             {
@@ -47,7 +47,7 @@ namespace DateRange.Tests
         public void YearEqualTest(params string[] args)
         {
             string? programOutput = InitializeWithOutput(args);
-            Assert.Equal(Check(VisibleDate.Full, args[0], args[1]), programOutput);
+            Assert.Equal(FormatDatesToRange(VisibleDate.Full, args[0], args[1]), programOutput);
         }
 
         [Theory]
@@ -59,7 +59,7 @@ namespace DateRange.Tests
         public void DayEqualTest(params string[] args)
         {
             string? programOutput = InitializeWithOutput(args);
-            Assert.Equal(Check(VisibleDate.Day, args[0], args[1]), programOutput);
+            Assert.Equal(FormatDatesToRange(VisibleDate.Day, args[0], args[1]), programOutput);
         }
 
         [Theory]
@@ -70,7 +70,7 @@ namespace DateRange.Tests
         public void ReverseDayEqualTest(params string[] args)
         {
             string? programOutput = InitializeWithOutput(args);
-            Assert.Equal(Check(VisibleDate.Day, args[1], args[0]), programOutput);
+            Assert.Equal(FormatDatesToRange(VisibleDate.Day, args[1], args[0]), programOutput);
         }
 
         [Theory]
@@ -82,7 +82,7 @@ namespace DateRange.Tests
         public void MonthEqualTest(params string[] args)
         {
             string? programOutput = InitializeWithOutput(args);
-            Assert.Equal(Check(VisibleDate.DayMonth, args[0], args[1]), programOutput);
+            Assert.Equal(FormatDatesToRange(VisibleDate.DayMonth, args[0], args[1]), programOutput);
         }
 
         [Theory]
@@ -93,7 +93,7 @@ namespace DateRange.Tests
         public void ReverseMonthEqualTest(params string[] args)
         {
             string? programOutput = InitializeWithOutput(args);
-            Assert.Equal(Check(VisibleDate.DayMonth, args[1], args[0]), programOutput);
+            Assert.Equal(FormatDatesToRange(VisibleDate.DayMonth, args[1], args[0]), programOutput);
         }
 
         [Theory]
@@ -127,7 +127,7 @@ namespace DateRange.Tests
         public void ReverseYearEqualTest(params string[] args)
         {
             string? programOutput = InitializeWithOutput(args);
-            Assert.Equal(Check(VisibleDate.Full, args[1], args[0]), programOutput);
+            Assert.Equal(FormatDatesToRange(VisibleDate.Full, args[1], args[0]), programOutput);
         }
 
         [Theory]
@@ -143,7 +143,7 @@ namespace DateRange.Tests
         public void FormatDayEqualTest(params string[] args)
         {
             string? programOutput = InitializeWithOutput(args);
-            Assert.Equal(Check(VisibleDate.Full, "05.01.2020", "01.05.2050"), programOutput);
+            Assert.Equal(FormatDatesToRange(VisibleDate.Full, "05.01.2020", "01.05.2050"), programOutput);
         }
 
         [Theory]
@@ -151,7 +151,7 @@ namespace DateRange.Tests
         public void FormatYearEqualTest(params string[] args)
         {
             string? programOutput = InitializeWithOutput(args);
-            Assert.Equal(Check(VisibleDate.Full, "20.07.0999", "05.01.1020"), programOutput);
+            Assert.Equal(FormatDatesToRange(VisibleDate.Full, "20.07.0999", "05.01.1020"), programOutput);
         }
     }
 }
