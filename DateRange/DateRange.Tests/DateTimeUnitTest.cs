@@ -46,6 +46,34 @@ namespace DateRange.Tests
             {
                 new DateTime(2017, 1, 1), new DateTime(2017, 1, 5)
             },
+            new object[]
+            {
+                new DateTime(9999, 1, 1), new DateTime(9998, 1, 5)
+            },
+            new object[]
+            {
+                new DateTime(2020, 1, 1), new DateTime(2020, 1, 1)
+            },
+            new object[]
+            {
+                new DateTime(2022, 1, 31), new DateTime(2022, 2, 1)
+            },
+            new object[]
+            {
+                new DateTime(2022, 3, 1), new DateTime(2022, 2, 28)
+            },
+            new object[]
+            {
+                new DateTime(2022, 1, 31), new DateTime(2022, 2, 28)
+            },
+            new object[]
+            {
+                new DateTime(2022, 1, 31), new DateTime(2022, 2, 28)
+            },
+            new object[]
+            {
+                new DateTime(2023, 1, 1), new DateTime(2022, 12, 31)
+            },
         };
            
 
@@ -54,6 +82,8 @@ namespace DateRange.Tests
         public void DateEqualTest(DateTime firstDate, DateTime secondDate)
         {
             string? response = Program.Initialize(firstDate, secondDate);
+            output.WriteLine(response);
+            response = response == null ? string.Empty : response;
             string[] split = response.Split('-');
 
             bool buildDayAndMonth = false;
@@ -74,8 +104,6 @@ namespace DateRange.Tests
 
                 if (DateTime.TryParse(temp, out DateTime parsedDate))
                 {
-                    output.WriteLine(parsedDate.ToString(Program.formatTypes[0]));
-
                     dates[i] = parsedDate;
 
                     // same year:
