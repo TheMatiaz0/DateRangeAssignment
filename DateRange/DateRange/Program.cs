@@ -12,17 +12,45 @@ namespace DateRange
 
     public class Program
     {
-        private static readonly string[] formatDateString =
+        public static readonly string[] formatDateString =
         {
             "dd.MM.yyyy",
             "dd.MM",
             "dd"
         };
 
-        private static string GetVisibleDateString(VisibleDate date)
+        public static string GetVisibleDateString(VisibleDate date)
         {
             return formatDateString[(int)date];
         }
+
+        private static string? CheckYear(DateTime firstDate, DateTime secondDate)
+        {
+            int yearDifference = firstDate.Year - secondDate.Year;
+            return CheckValue(yearDifference, firstDate,
+                secondDate, GetVisibleDateString(VisibleDate.Full));
+        }
+
+        private static string? CheckDayMonth(DateTime firstDate, DateTime secondDate)
+        {
+            int monthDifference = firstDate.Month - secondDate.Month;
+            return CheckValue(monthDifference, firstDate,
+                secondDate, GetVisibleDateString(VisibleDate.DayMonth));
+        }
+
+        private static string? CheckDay(DateTime firstDate, DateTime secondDate)
+        {
+            int dayDifference = firstDate.Day - secondDate.Day;
+            return CheckValue(dayDifference, firstDate,
+                secondDate, GetVisibleDateString(VisibleDate.Day));
+        }
+
+        private static Func<DateTime, DateTime, string?>[] checkFunctions = new Func<DateTime, DateTime, string?>[]
+        {
+            CheckYear,
+            CheckDayMonth,
+            CheckDay
+        };
 
         /// <summary>
         /// Picks only two first arguments as string value.
@@ -45,6 +73,22 @@ namespace DateRange
                 throw new ArgumentOutOfRangeException(nameof(args), $"Argument or arguments are missing! Launch the program with two dates as arguments");
             }
 
+            (DateTime firstDate, DateTime secondDate) = ParseDates(args);
+
+            for (int i = 0; i < 3; i++)
+            {
+                string? dateFragmentString;
+                if ((dateFragmentString = checkFunctions[i](firstDate, secondDate)) != null)
+                {
+                    return dateFragmentString;
+                }
+            }
+
+            return firstDate.ToString(formatDateString[0]);
+        }
+
+        private static (DateTime, DateTime) ParseDates(string[] args)
+        {
             if (!DateTime.TryParse(args[0], out DateTime firstDate))
             {
                 throw new FormatException($"Bad format of first date argument! {args[0]} isn't the right format of date!");
@@ -54,43 +98,24 @@ namespace DateRange
                 throw new FormatException($"Bad format of second date argument! {args[1]} isn't the right format of date!");
             }
 
-            int yearDifference = firstDate.Year - secondDate.Year;
-            if (CheckValue(yearDifference, firstDate, secondDate, GetVisibleDateString(VisibleDate.Full), out string? yearValue))
-            {
-                return yearValue;
-            }
-
-            int monthDifference = firstDate.Month - secondDate.Month;
-            if (CheckValue(monthDifference, firstDate, secondDate, GetVisibleDateString(VisibleDate.DayMonth), out string? monthValue))
-            {
-                return monthValue;
-            }
-
-            int dayDifference = firstDate.Day - secondDate.Day;
-            if (CheckValue(dayDifference, firstDate, secondDate, GetVisibleDateString(VisibleDate.Day), out string? dayValue))
-            {
-                return dayValue;
-            }
-
-            return firstDate.ToString(formatDateString[0]);
+            return (firstDate, secondDate);
         }
 
-        private static bool CheckValue(int difference, DateTime firstDate, DateTime secondDate, string first, out string? trueRange)
+        private static string? CheckValue(int difference, DateTime firstDate, DateTime secondDate, string first)
         {
+            if (difference == 0)
+            {
+                return null;
+            }
+
             if (difference > 0)
             {
-                trueRange = GetTrueRange(secondDate, firstDate, first);
-                return true;
+                DateTime temp = firstDate;
+                firstDate = secondDate;
+                secondDate = temp;
             }
 
-            else if (difference < 0)
-            {
-                trueRange = GetTrueRange(firstDate, secondDate, first);
-                return true;
-            }
-
-            trueRange = null;
-            return false;
+            return GetTrueRange(firstDate, secondDate, first);
         }
 
         private static string GetTrueRange(DateTime firstDate, DateTime secondDate, string firstString)
